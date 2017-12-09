@@ -2,6 +2,7 @@ package com.whypins.controller;
 
 import static spark.Spark.before;
 import static spark.Spark.get;
+import static spark.Spark.path;
 import static spark.Spark.post;
 import static spark.Spark.port;
 
@@ -52,43 +53,39 @@ public class Main {
 			response.header("Content-Encoding", "gzip");
 		});
 
-		/**
-		 * For test
-		 */
-		get("/test/:name", (request, response) -> {
-			return "Test data : " + request.params(":name") + " Success/Failed.";
-		});
+		path("/cdn", () -> {
 
-		/**
-		 * Will upload the file.
-		 */
-		post("/cdn/upload/:name", (request, response) -> {
-			Path path = Paths.get(BASE_DIRECTORY + File.separator + request.params(":name"));
-			if (!Files.exists(path)) {
-				Files.createFile(path);
-			}
-			writeToFile(request, path);
-			return Optional.ofNullable("File uploaded.");
-		});
+			/**
+			 * Will upload the file.
+			 */
+			post("/upload/:name", (request, response) -> {
+				Path path = Paths.get(BASE_DIRECTORY + File.separator + request.params(":name"));
+				if (!Files.exists(path)) {
+					Files.createFile(path);
+				}
+				writeToFile(request, path);
+				return Optional.ofNullable("File uploaded.");
+			});
 
-		/**
-		 * Will read and stream the file name
-		 */
-		get("/cdn/read/:name", (request, response) -> {
-			Path path = Paths.get(BASE_DIRECTORY + File.separator + request.params(":name"));
-			List<String> data = readFile(path);
-			StringBuilder stringBuilder = new StringBuilder();
-			data.forEach(stringBuilder::append);
-			return Optional.ofNullable(stringBuilder.toString());
-		});
+			/**
+			 * Will read and stream the file name
+			 */
+			get("/read/:name", (request, response) -> {
+				Path path = Paths.get(BASE_DIRECTORY + File.separator + request.params(":name"));
+				List<String> data = readFile(path);
+				StringBuilder stringBuilder = new StringBuilder();
+				data.forEach(stringBuilder::append);
+				return Optional.ofNullable(stringBuilder.toString());
+			});
 
-		/**
-		 * Will delete the file
-		 */
-		get("/cdn/delete/:name", (request, response) -> {
-			Path path = Paths.get(BASE_DIRECTORY + File.separator + request.params(":name"));
-			Files.delete(path);
-			return Optional.ofNullable("Deleted.");
+			/**
+			 * Will delete the file
+			 */
+			get("/delete/:name", (request, response) -> {
+				Path path = Paths.get(BASE_DIRECTORY + File.separator + request.params(":name"));
+				Files.delete(path);
+				return Optional.ofNullable("Deleted.");
+			});
 		});
 	}
 
