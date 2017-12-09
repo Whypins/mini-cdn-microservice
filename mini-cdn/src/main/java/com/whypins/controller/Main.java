@@ -63,7 +63,7 @@ public class Main {
 		 * Will upload the file.
 		 */
 		post("/cdn/upload/:name", (request, response) -> {
-			Path path = Paths.get(BASE_DIRECTORY + File.pathSeparator + request.params(":name"));
+			Path path = Paths.get(BASE_DIRECTORY + File.separator + request.params(":name"));
 			if (!Files.exists(path)) {
 				Files.createFile(path);
 			}
@@ -75,7 +75,7 @@ public class Main {
 		 * Will read and stream the file name
 		 */
 		get("/cdn/read/:name", (request, response) -> {
-			Path path = Paths.get(BASE_DIRECTORY + File.pathSeparator + request.params(":name"));
+			Path path = Paths.get(BASE_DIRECTORY + File.separator + request.params(":name"));
 			List<String> data = readFile(path);
 			StringBuilder stringBuilder = new StringBuilder();
 			data.forEach(stringBuilder::append);
@@ -86,7 +86,7 @@ public class Main {
 		 * Will delete the file
 		 */
 		get("/cdn/delete/:name", (request, response) -> {
-			Path path = Paths.get(BASE_DIRECTORY + File.pathSeparator + request.params(":name"));
+			Path path = Paths.get(BASE_DIRECTORY + File.separator + request.params(":name"));
 			Files.delete(path);
 			return Optional.ofNullable("Deleted.");
 		});
